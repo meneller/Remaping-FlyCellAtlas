@@ -1,4 +1,4 @@
-A Step-by-Step Guide to Remapping Unannotated Follicular Cells from FlyCellAtlas
+# A Step-by-Step Guide to Remapping Unannotated Follicular Cells from FlyCellAtlas
 This guide explains the methodology and provides annotated code for reclassifying unannotated ovarian follicular cells in Drosophila melanogaster using single-cell RNA-seq data obtained from FlyCellAtlas (Li et al., 2022; Jia et al., 2022). The objective is to identify novel subpopulations corresponding to distinct stages of follicular development by reprocessing and reclustering the unannotated cells.
 
 1. Prerequisites and Setup
