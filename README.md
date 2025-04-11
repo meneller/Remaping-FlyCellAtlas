@@ -1,7 +1,7 @@
 # A Step-by-Step Guide to Remapping Unannotated Follicular Cells from FlyCellAtlas
 This guide explains the methodology and provides annotated code for reclassifying unannotated ovarian follicular cells in Drosophila melanogaster using single-cell RNA-seq data obtained from FlyCellAtlas (Li et al., 2022; Jia et al., 2022). The objective is to identify novel subpopulations corresponding to distinct stages of follicular development by reprocessing and reclustering the unannotated cells.
 
-1. Prerequisites and Setup
+## 1. Prerequisites and Setup
 Before you begin, ensure you have the following Python packages installed:
 
 Scanpy for single-cell data analysis
@@ -14,7 +14,7 @@ You can install these packages via pip (if not already installed):
 
 
 pip install scanpy pandas numpy anndata
-2. Data Loading and Initial Filtering
+## 2. Data Loading and Initial Filtering
 First, the script loads the single-cell dataset from an .h5ad file. The dataset contains various cells from Drosophila ovaries. In this example, we isolate the subset of cells with an annotation labeled as “unannotated”:
 
 
@@ -31,7 +31,7 @@ print(unannotated_cells)
 Explanation:
 This step isolates cells without a predefined annotation for further analysis.
 
-3. Dimensionality Reduction and UMAP Construction
+## 3. Dimensionality Reduction and UMAP Construction
 The next steps involve reducing the dimensionality of the data using PCA and constructing a UMAP embedding. This helps visualize the global structure of the unannotated cells:
 
 
@@ -51,7 +51,7 @@ Neighbors computation: Uses the PCA-reduced space to construct a graph represent
 
 UMAP: A non-linear dimensionality reduction technique that preserves both local and global data structure in a low-dimensional space.
 
-4. Clustering Using the Leiden Algorithm
+## 4. Clustering Using the Leiden Algorithm
 Clustering is performed on the unannotated cells to delineate distinct subpopulations. The Leiden algorithm is used here with an adjustable resolution parameter:
 
 
@@ -61,7 +61,7 @@ sc.pl.umap(unannotated_cells, color=['leiden'], title="UMAP Unannotated Subset (
 Explanation:
 A resolution of 1.0 is initially chosen, though later in the pipeline a resolution of 0.3 is also applied for a more conservative split. Clustering subdivides the continuous cellular space into discrete groups based on gene expression similarities.
 
-5. Identification of Marker Genes per Cluster
+## 5. Identification of Marker Genes per Cluster
 Once clusters are defined, the next step is to identify key marker genes responsible for the observed differences. Scanpy’s built-in function extracts the most significant differentially expressed genes for each cluster:
 
 # Identify marker genes for each cluster using the Wilcoxon method
@@ -81,7 +81,7 @@ df_markers.to_csv("markers_all_clusters-leiden.csv", index=False)
 Explanation:
 This step produces a ranked list of marker genes per cluster that you can compare against prior literature (e.g., Tootle et al., 2011; Zartman et al., 2009) to link clusters with developmental stages.
 
-6. Remapping and Merging of Annotations
+## 6. Remapping and Merging of Annotations
 A second part of the analysis involves reassigning new annotations to the unannotated cells based on the Leiden clusters. The code below demonstrates how to map cluster IDs to biologically interpretable stage labels (e.g., Stage 9, Stage 10A, Stage 10B/11, adipocytes):
 
 # Using a pre-defined mapping dictionary for unannotated cells:
@@ -123,7 +123,7 @@ The new annotations are merged back into the original dataset for a global view.
 
 Final UMAP plots help verify that the remapping reflects the expression patterns observed.
 
-7. Checking Marker Gene Expression
+## 7. Checking Marker Gene Expression
 To validate the new annotations, expression levels of known marker genes are plotted. This step cross-checks whether the predicted stages correspond with expected transcriptional profiles:
 
 # Generate a dot plot of marker gene expression across the new annotated groups
@@ -140,7 +140,7 @@ The dot plot visualizes the expression of key genes (e.g., the Cadherin family a
 
 Notice that the annotation “adipocytes” was assigned solely based on high Ilp6 expression, following the previous annotation by Wu-Min Deng.
 
-8. Finalizing the Analysis
+## 8. Finalizing the Analysis
 Lastly, the updated anndata object is saved to an .h5ad file for downstream analyses or sharing with collaborators:
 
 python
