@@ -12,14 +12,12 @@ Anndata for handling single-cell data objects
 
 You can install these packages via pip (if not already installed):
 
-bash
-Copiar
+
 pip install scanpy pandas numpy anndata
 2. Data Loading and Initial Filtering
 First, the script loads the single-cell dataset from an .h5ad file. The dataset contains various cells from Drosophila ovaries. In this example, we isolate the subset of cells with an annotation labeled as “unannotated”:
 
-python
-Copiar
+
 import scanpy as sc
 import pandas as pd
 import numpy as np
@@ -36,8 +34,7 @@ This step isolates cells without a predefined annotation for further analysis.
 3. Dimensionality Reduction and UMAP Construction
 The next steps involve reducing the dimensionality of the data using PCA and constructing a UMAP embedding. This helps visualize the global structure of the unannotated cells:
 
-python
-Copiar
+
 # Perform PCA on the unannotated cells
 sc.tl.pca(unannotated_cells, svd_solver='arpack')
 
@@ -57,8 +54,7 @@ UMAP: A non-linear dimensionality reduction technique that preserves both local 
 4. Clustering Using the Leiden Algorithm
 Clustering is performed on the unannotated cells to delineate distinct subpopulations. The Leiden algorithm is used here with an adjustable resolution parameter:
 
-python
-Copiar
+
 # Perform clustering using the Leiden algorithm (adjust the resolution as needed)
 sc.tl.leiden(unannotated_cells, resolution=1.0)
 sc.pl.umap(unannotated_cells, color=['leiden'], title="UMAP Unannotated Subset (by Leiden)")
@@ -68,8 +64,6 @@ A resolution of 1.0 is initially chosen, though later in the pipeline a resoluti
 5. Identification of Marker Genes per Cluster
 Once clusters are defined, the next step is to identify key marker genes responsible for the observed differences. Scanpy’s built-in function extracts the most significant differentially expressed genes for each cluster:
 
-python
-Copiar
 # Identify marker genes for each cluster using the Wilcoxon method
 sc.tl.rank_genes_groups(
     unannotated_cells, 
@@ -90,8 +84,6 @@ This step produces a ranked list of marker genes per cluster that you can compar
 6. Remapping and Merging of Annotations
 A second part of the analysis involves reassigning new annotations to the unannotated cells based on the Leiden clusters. The code below demonstrates how to map cluster IDs to biologically interpretable stage labels (e.g., Stage 9, Stage 10A, Stage 10B/11, adipocytes):
 
-python
-Copiar
 # Using a pre-defined mapping dictionary for unannotated cells:
 mapping = {
     "0": "Stage 9",
@@ -134,8 +126,6 @@ Final UMAP plots help verify that the remapping reflects the expression patterns
 7. Checking Marker Gene Expression
 To validate the new annotations, expression levels of known marker genes are plotted. This step cross-checks whether the predicted stages correspond with expected transcriptional profiles:
 
-python
-Copiar
 # Generate a dot plot of marker gene expression across the new annotated groups
 sc.pl.dotplot(
     adata,
